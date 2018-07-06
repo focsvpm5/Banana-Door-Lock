@@ -8,20 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		8425C24820EE71BE00303F31 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C24720EE71BE00303F31 /* AppDelegate.swift */; };
-		8425C24A20EE71BE00303F31 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C24920EE71BE00303F31 /* ViewController.swift */; };
+		8425C24A20EE71BE00303F31 /* loginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C24920EE71BE00303F31 /* loginController.swift */; };
 		8425C24D20EE71BE00303F31 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8425C24B20EE71BE00303F31 /* Main.storyboard */; };
 		8425C24F20EE71C100303F31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8425C24E20EE71C100303F31 /* Assets.xcassets */; };
 		8425C25220EE71C100303F31 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8425C25020EE71C100303F31 /* LaunchScreen.storyboard */; };
+		8425C25A20EE7CE800303F31 /* registerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C25920EE7CE800303F31 /* registerController.swift */; };
+		8425C26220EE87D900303F31 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C26120EE87D900303F31 /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8425C24420EE71BE00303F31 /* Banana Door Lock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Banana Door Lock.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8425C24720EE71BE00303F31 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		8425C24920EE71BE00303F31 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		8425C24920EE71BE00303F31 /* loginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = loginController.swift; sourceTree = "<group>"; };
 		8425C24C20EE71BE00303F31 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8425C24E20EE71C100303F31 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8425C25120EE71C100303F31 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8425C25320EE71C100303F31 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8425C25920EE7CE800303F31 /* registerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = registerController.swift; sourceTree = "<group>"; };
+		8425C26120EE87D900303F31 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +58,40 @@
 		8425C24620EE71BE00303F31 /* Banana Door Lock */ = {
 			isa = PBXGroup;
 			children = (
+				8425C26020EE87A800303F31 /* Utils */,
+				8425C25C20EE7D9100303F31 /* register */,
+				8425C25B20EE7D7700303F31 /* login */,
 				8425C24720EE71BE00303F31 /* AppDelegate.swift */,
-				8425C24920EE71BE00303F31 /* ViewController.swift */,
 				8425C24B20EE71BE00303F31 /* Main.storyboard */,
 				8425C24E20EE71C100303F31 /* Assets.xcassets */,
 				8425C25020EE71C100303F31 /* LaunchScreen.storyboard */,
 				8425C25320EE71C100303F31 /* Info.plist */,
 			);
 			path = "Banana Door Lock";
+			sourceTree = "<group>";
+		};
+		8425C25B20EE7D7700303F31 /* login */ = {
+			isa = PBXGroup;
+			children = (
+				8425C24920EE71BE00303F31 /* loginController.swift */,
+			);
+			path = login;
+			sourceTree = "<group>";
+		};
+		8425C25C20EE7D9100303F31 /* register */ = {
+			isa = PBXGroup;
+			children = (
+				8425C25920EE7CE800303F31 /* registerController.swift */,
+			);
+			path = register;
+			sourceTree = "<group>";
+		};
+		8425C26020EE87A800303F31 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				8425C26120EE87D900303F31 /* Extensions.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,8 +165,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8425C24A20EE71BE00303F31 /* ViewController.swift in Sources */,
+				8425C24A20EE71BE00303F31 /* loginController.swift in Sources */,
+				8425C25A20EE7CE800303F31 /* registerController.swift in Sources */,
 				8425C24820EE71BE00303F31 /* AppDelegate.swift in Sources */,
+				8425C26220EE87D900303F31 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
