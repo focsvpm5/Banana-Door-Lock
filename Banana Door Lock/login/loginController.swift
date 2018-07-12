@@ -10,11 +10,14 @@ import UIKit
 import Alamofire
 import RealmSwift
 
-class loginController: UIViewController {
+class loginController: UIViewController, UITextFieldDelegate {
 
     let realm = try! Realm()
     var users: Results<Account>?
     var user: Account!
+    
+    
+    @IBOutlet weak var loginView: UIView!
     
     @IBOutlet weak var logoDoor: UIImageView!
     
@@ -29,17 +32,22 @@ class loginController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        userName.delegate = self
+        passWord.delegate = self
+        
+        loginView.dropShadow(color: .black, opacity: 1, offSet: CGSize(width: -1, height: 1), radius: 3, scale: true)
+        
         self.users = realm.objects(Account.self)
         
-        userName.setBottomBorder(borderColor: .white)
+        userName.setBottomBorder(borderColor: .lightGray)
         
-        passWord.setBottomBorder(borderColor: .white)
+        passWord.setBottomBorder(borderColor: .lightGray)
         
         logIn.layer.cornerRadius = 10
         
         regisTer.layer.cornerRadius = 10
         
-        setStatusBarBackgroundColor(color: .black)
+        setStatusBarBackgroundColor(color: .init(red: 65/255.0, green: 195/255.0, blue: 0, alpha: 1))
         
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -48,6 +56,17 @@ class loginController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        
+        return true
+    }
+    
     
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .lightContent

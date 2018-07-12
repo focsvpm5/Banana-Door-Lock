@@ -7,24 +7,27 @@
 //
 
 import UIKit
-import SideMenu
-import CocoaMQTT
+import SwiftMQTT
 
 class userController: UIViewController {
+    
+    var mqttSession: MQTTSession!
     
     var count = 0
     
     @IBOutlet weak var lockPressed: UIButton!
     
+    @IBOutlet weak var statusLabel: UILabel!
+    
+    @IBOutlet weak var historyButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        SideMenuManager.default.menuLeftNavigationController = storyboard!.instantiateViewController(withIdentifier: "LeftMenuNavigationController") as? UISideMenuNavigationController
-        SideMenuManager.default.menuAddPanGestureToPresent(toView: self.navigationController!.navigationBar)
-        SideMenuManager.default.menuAddScreenEdgePanGesturesToPresent(toView: self.navigationController!.view)
-        SideMenuManager.default.menuPresentMode = .menuSlideIn
+        historyButton.layer.cornerRadius = 10
         
     }
+    
     
     
     override func didReceiveMemoryWarning() {
@@ -34,110 +37,90 @@ class userController: UIViewController {
     
     @IBAction func lockAnimation(_ sender: UIButton) {
         if count == 0 {
+            
+            // change status
+            
+            statusLabel.textColor = .green
+            statusLabel.text = "Open"
+            
+            // change image
+            
             lockPressed.setImage(#imageLiteral(resourceName: "unlock"), for: UIControlState.normal)
             count = 1
-            mqttSetting()
-        } else {
+            
+            // set mqtt
+            
+            mqttSession = MQTTSession(host: "m10.cloudmqtt.com", port: 18771, clientID: "AAA", cleanSession: true, keepAlive: 15, useSSL: false)
+            mqttSession.username = "nhuivzzk"
+            mqttSession.password = "p346wIR6o_t1"
+            mqttSession.delegate = self
+            
+            // mqtt connect
+            
+            mqttSession.connect { (succeeded, error) -> Void in
+                if succeeded {
+                    print("Connected!")
+                } else {
+                    print("error")
+                }
+            }
+            
+            // mqtt publish
+            
+            let channel = "Ratchapong"
+            let message = "on"
+            let data = message.data(using: .utf8)!
+            mqttSession.publish(data, in: channel, delivering: .atMostOnce, retain: false) {
+                (succeeded, error) -> Void in
+                if succeeded {
+                    print("Published!")
+                }
+            }
+            
+            // mqtt subscrib
+            
+            mqttSession.subscribe(to: "Aeng", delivering: .atMostOnce) { (succeeded, error) -> Void in
+                if succeeded {
+                    print("Subscribed!")
+                }
+            }
+            
+         } else {
+            
+            // change status
+            
+            statusLabel.textColor = .red
+            statusLabel.text = "Close"
+            
+            //change image
+            
             lockPressed.setImage(#imageLiteral(resourceName: "padlock"), for: UIControlState.normal)
             count = 0
-        }
-    }
-    
-    func mqttSetting(){
-        let clientID = "CocoaMQTT-" + String(ProcessInfo().processIdentifier)
-        let mqtt = CocoaMQTT(clientID: clientID, host: "m10.cloudmqtt.com", port: 18771)
-        mqtt.username = "nhuivzzk"
-        mqtt.password = "a2Lw91WSoAhD"
-        mqtt.willMessage = CocoaMQTTWill(topic: "/will", message: "dieout")
-        mqtt.keepAlive = 60
-        mqtt.delegate = self
-        mqtt.connect()
-        mqtt.publish("/will", withString: "dieout")
-    }
-    
-    
-    
-}
-
-extension userController: CocoaMQTTDelegate {
-    // Optional ssl CocoaMQTTDelegate
-    func mqtt(_ mqtt: CocoaMQTT, didReceive trust: SecTrust, completionHandler: @escaping (Bool) -> Void) {
-        TRACE("trust: \(trust)")
-        /// Validate the server certificate
-        ///
-        /// Some custom validation...
-        ///
-        /// if validatePassed {
-        ///     completionHandler(true)
-        /// } else {
-        ///     completionHandler(false)
-        /// }
-        completionHandler(true)
-    }
-    
-    func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
-        TRACE("ack: \(ack)")
-        
-        if ack == .accept {
-            //mqtt.subscribe("chat/room/animals/client/+", qos: CocoaMQTTQOS.qos1)
-            
             
         }
     }
     
-    func mqtt(_ mqtt: CocoaMQTT, didStateChangeTo state: CocoaMQTTConnState) {
-        TRACE("new state: \(state)")
-    }
-    
-    func mqtt(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {
-        TRACE("message: \(String(describing: message.string?.description)), id: \(id)")
-    }
-    
-    func mqtt(_ mqtt: CocoaMQTT, didPublishAck id: UInt16) {
-        TRACE("id: \(id)")
-    }
-    
-    func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16 ) {
-        TRACE("message: \(String(describing: message.string?.description)), id: \(id)")
-        
-    }
-    
-    func mqtt(_ mqtt: CocoaMQTT, didSubscribeTopic topic: String) {
-        TRACE("topic: \(topic)")
-    }
-    
-    func mqtt(_ mqtt: CocoaMQTT, didUnsubscribeTopic topic: String) {
-        TRACE("topic: \(topic)")
-    }
-    
-    func mqttDidPing(_ mqtt: CocoaMQTT) {
-        TRACE()
-    }
-    
-    func mqttDidReceivePong(_ mqtt: CocoaMQTT) {
-        TRACE()
-    }
-    
-    func mqttDidDisconnect(_ mqtt: CocoaMQTT, withError err: Error?) {
-        TRACE("\(err.debugDescription)")
-    }
+//    func mqttSession(session: MQTTSession, received message: Data, in topic: String) {
+//        let string = String(data: message, encoding: .utf8)!
+//        print(string)
+//    }
+
 }
 
-extension userController {
-    func TRACE(_ message: String = "", fun: String = #function) {
-        let names = fun.components(separatedBy: ":")
-        var prettyName: String
-        if names.count == 1 {
-            prettyName = names[0]
-        } else {
-            prettyName = names[1]
-        }
-        
-        if fun == "mqttDidDisconnect(_:withError:)" {
-            prettyName = "didDisconect"
-        }
-        
-        print("[TRACE] [\(prettyName)]: \(message)")
+extension userController: MQTTSessionDelegate {
+    
+    func mqttDidReceive(message data: Data, in topic: String, from session: MQTTSession) {
+        let string = String(data: data, encoding: .utf8)!
+        print(string)
     }
+    
+    func mqttDidDisconnect(session: MQTTSession) {
+        print("Disconnect")
+    }
+    
+    func mqttSocketErrorOccurred(session: MQTTSession) {
+        print("SocketError")
+    }
+    
 }
 
