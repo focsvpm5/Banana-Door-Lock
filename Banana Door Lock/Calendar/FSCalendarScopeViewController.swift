@@ -13,13 +13,15 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var calendar: FSCalendar!
-    @IBOutlet weak var animationSwitch: UISwitch!
     
     @IBOutlet weak var calendarHeightConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var datePicked: UILabel!
+    
+    
     fileprivate lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy/MM/dd"
+        formatter.dateFormat = "dd/MM/yyyy" //"yyyy/MM/dd"
         return formatter
     }()
     fileprivate lazy var scopeGesture: UIPanGestureRecognizer = {
@@ -33,6 +35,8 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        datePicked.text = self.dateFormatter.string(from: Date())
         
         setStatusBarBackgroundColor(color: .init(red: 65/255.0, green: 195/255.0, blue: 0, alpha: 1))
         
@@ -79,6 +83,7 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         print("did select date \(self.dateFormatter.string(from: date))")
+        datePicked.text = self.dateFormatter.string(from: date)          // set datePicked
         let selectedDates = calendar.selectedDates.map({self.dateFormatter.string(from: $0)})
         print("selected dates is \(selectedDates)")
         if monthPosition == .next || monthPosition == .previous {
@@ -92,23 +97,17 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
     
     // MARK:- UITableViewDataSource
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
+//    func numberOfSections(in tableView: UITableView) -> Int {
+//        return 2
+//    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return [2,20][section]
+        return 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            let identifier = ["cell_month", "cell_week"][indexPath.row]
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifier)!
-            return cell
-        } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell")!
             return cell
-        }
     }
     
     
@@ -116,15 +115,12 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.section == 0 {
-            let scope: FSCalendarScope = (indexPath.row == 0) ? .month : .week
-            self.calendar.setScope(scope, animated: self.animationSwitch.isOn)
-        }
+        print("select")
     }
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 10
-    }
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 0.5
+//    }
     
     // MARK:- Target actions
     
@@ -137,6 +133,11 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
     
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .lightContent
+    }
+    
+    
+    @IBAction func backPressed(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
     }
     
 }

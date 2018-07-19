@@ -9,35 +9,69 @@
 import UIKit
 import Alamofire
 import RealmSwift
+import SwiftValidator
 
-class loginController: UIViewController, UITextFieldDelegate {
+class loginController: UIViewController, UITextFieldDelegate, ValidationDelegate {
 
+    // Realm
     let realm = try! Realm()
-    var users: Results<Account>?
-    var user: Account!
+    var users: Results<userDoor>?
+    var user: userDoor!
     
-    
+    // UI View
     @IBOutlet weak var loginView: UIView!
     
+    // UI Image View
     @IBOutlet weak var logoDoor: UIImageView!
     
+    // Text Field
     @IBOutlet weak var userName: UITextField!
-    
     @IBOutlet weak var passWord: UITextField!
     
+    // Button
     @IBOutlet weak var logIn: UIButton!
-    
     @IBOutlet weak var regisTer: UIButton!
+    
+    // Label
+    @IBOutlet weak var usernameError: UILabel!
+    @IBOutlet weak var passwordError: UILabel!
+    
+    // Validate
+    let validator = Validator()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Validate
+        validator.styleTransformers(success:{ (validationRule) -> Void in
+            print("here")
+            // clear error label
+            validationRule.errorLabel?.isHidden = true
+            validationRule.errorLabel?.text = ""
+            if let textField = validationRule.field as? UITextField {
+                textField.layer.borderColor = UIColor.green.cgColor
+                textField.layer.borderWidth = 0.5
+                
+            }
+        }, error:{ (validationError) -> Void in
+            print("error")
+            validationError.errorLabel?.isHidden = false
+            validationError.errorLabel?.text = validationError.errorMessage
+            if let textField = validationError.field as? UITextField {
+                textField.layer.borderColor = UIColor.red.cgColor
+                textField.layer.borderWidth = 1.0
+            }
+        })
+        
+        validator.registerField(userName, errorLabel: usernameError, rules: [RequiredRule(), EmailRule()])
+        validator.registerField(passWord, errorLabel: passwordError, rules: [RequiredRule()])
         
         userName.delegate = self
         passWord.delegate = self
         
         loginView.dropShadow(color: .black, opacity: 1, offSet: CGSize(width: -1, height: 1), radius: 3, scale: true)
         
-        self.users = realm.objects(Account.self)
+        self.users = realm.objects(userDoor.self)
         
         userName.setBottomBorder(borderColor: .lightGray)
         
@@ -80,9 +114,24 @@ class loginController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func loginPressed(_ sender: UIButton) {
-        let parameters: Parameters = ["username": "\(userName.text!)", "password": "\(passWord.text!)"]
-        let baseURL = "http://b-gib.banana.co.th/Smarthome/public/login"
-        let header = ["Apikey": "banana_app_iot", "Content-Type": "application/x-www-form-urlencoded"]
+        
+        print("Validating...")
+        validator.validate(self)
+        
+        
+    }
+    
+    func validationSuccessful() {
+        print("Validation Success!")
+//        let alert = UIAlertController(title: "Success", message: "สมัครเรียบร้อยแล้ว", preferredStyle: UIAlertControllerStyle.alert)
+//        let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//        alert.addAction(defaultAction)
+//        self.present(alert, animated: true, completion: nil)
+        
+        let parameters: Parameters = ["user": "\(userName.text!)", "pass": "\(passWord.text!)"]
+        let baseURL = "http://january.banana.co.th/api/auth/login"
+        //let header = ["Apikey": "banana_app_iot", "Content-Type": "application/x-www-form-urlencoded"]
+        let header = ["Content-Type": "application/x-www-form-urlencoded"]
         print(parameters)
         Alamofire.request(baseURL, method: .post, parameters: parameters, encoding: URLEncoding.default, headers: header)
             .downloadProgress(queue: DispatchQueue.global(qos: .utility)) { progress in
@@ -93,28 +142,45 @@ class loginController: UIViewController, UITextFieldDelegate {
                 return .success
             }
             .responseJSON { response in
+//                guard let newsResponse = response.result.value as? [[String:String]] else{
+//                    print("Error: \(String(describing: response.result.error))")
+//                    return
+//                }
+//                print("JSON: \(newsResponse)")
+//                let localArray = newsResponse
+//                //Access the localArray
+//                //print("Local Array:", localArray)
+//                //Now to get the desired value from dictionary try like this way.
+//                let dic = localArray[0]
+//                let token = dic["token"]
+//                let firstname = dic["firstname"]
+//                let lastname = dic["lastname"]
+//                let user_id = dic["user_id"]
+//                let userData = userRealm(_token: token!, _firstName: firstname!, _lastName: lastname!, _userId: user_id!)
+//                print(userData)
+//                RealmService.share.create(userData)
+                //... get other value same way.
                 //debugPrint(response)
-                //print(response.description)
+                print(response.description)
                 if let result = response.result.value {
                     let JSON = result as! NSDictionary
-                    //print(JSON)
-                    
                     let message = JSON["message"] as! Dictionary<String,String>
-                    let userId = message["userId"]
-                    let firstName = message["firstName"]
-                    let lastName = message["lastName"]
-                    let gender = message["gender"]
-                    let addr = message["addr"]
-                    let tel = message["tel"]
-                    let email = message["email"]
-                    let imgUrl = message["imgUrl"]
                     let token = message["token"]
-                    let userType = message["userType"]
-                    let account = Account(_userId: userId!, _firstName: firstName!, _lastName: lastName!, _gender: gender!, _addr: addr!, _tel: tel!, _email: email!, _imgUrl: imgUrl!, _token: token!, _userType: userType!)
-                    print(account)
-                    RealmService.share.create(account)
+                    let firstName = message["firstname"]
+                    let lastName = message["lastname"]
+                    let user_id = message["user_id"]
+                    let userRole = message["user_role"]
+                    let userData = userDoor(_token: token!, _firstName: firstName!, _lastName: lastName!, _userId: user_id!, _userRole: userRole!)
+                    print(userData)
+                    RealmService.share.create(userData)
                 }
         }
+        let selectRoomView = storyboard?.instantiateViewController(withIdentifier: "selectedRoomViewController")as! UINavigationController
+        present(selectRoomView, animated: true, completion: nil)
+        
+    }
+    func validationFailed(_ errors:[(Validatable, ValidationError)]) {
+        print("Validation FAILED!")
     }
     
 }

@@ -29,10 +29,18 @@ class userController: UIViewController {
     }
     
     
+    @IBAction func backPressed(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
+    }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle{
+        return .lightContent
     }
     
     @IBAction func lockAnimation(_ sender: UIButton) {
@@ -67,8 +75,8 @@ class userController: UIViewController {
             
             // mqtt publish
             
-            let channel = "Ratchapong"
-            let message = "on"
+            let channel = "Doorlock"
+            let message = "unlock"
             let data = message.data(using: .utf8)!
             mqttSession.publish(data, in: channel, delivering: .atMostOnce, retain: false) {
                 (succeeded, error) -> Void in

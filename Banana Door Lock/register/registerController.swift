@@ -15,9 +15,12 @@
 //
 
 import UIKit
+import SwiftValidator
+import Alamofire
 
-class registerController: UIViewController, UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class registerController: UIViewController, UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, ValidationDelegate {
     
+    // UI ImageView
     @IBOutlet weak var myImageView: UIImageView!
     
     @IBAction func importImage(_ sender: Any) {
@@ -34,23 +37,53 @@ class registerController: UIViewController, UITextFieldDelegate, UINavigationCon
         }
     }
     
-    
-    
+    // UI TextFied
     @IBOutlet weak var emailText: UITextField!
     @IBOutlet weak var passwordText: UITextField!
     @IBOutlet weak var ชื่อText: UITextField!
     @IBOutlet weak var นามสกุลText: UITextField!
     @IBOutlet weak var เบอร์โทรText: UITextField!
-    
-    
     @IBOutlet weak var ตำแหน่งText: UITextField!
-    var ตำแหน่ง = ["Student","Teacher","TA"]
+    var ตำแหน่ง = ["student","mentor"]
     var selectedPosition: String?
     
+    // UI Label
+    @IBOutlet weak var emailError: UILabel!
+    @IBOutlet weak var passwordError: UILabel!
+    @IBOutlet weak var firstnameError: UILabel!
+    @IBOutlet weak var lastnameError: UILabel!
+    @IBOutlet weak var telError: UILabel!
+    
+    let validator = Validator()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        validator.styleTransformers(success:{ (validationRule) -> Void in
+            print("here")
+            // clear error label
+            validationRule.errorLabel?.isHidden = true
+            validationRule.errorLabel?.text = ""
+            if let textField = validationRule.field as? UITextField {
+                textField.layer.borderColor = UIColor.green.cgColor
+                textField.layer.borderWidth = 0.5
+                
+            }
+        }, error:{ (validationError) -> Void in
+            print("error")
+            validationError.errorLabel?.isHidden = false
+            validationError.errorLabel?.text = validationError.errorMessage
+            if let textField = validationError.field as? UITextField {
+                textField.layer.borderColor = UIColor.red.cgColor
+                textField.layer.borderWidth = 1.0
+            }
+        })
+        
+        validator.registerField(emailText, errorLabel: emailError, rules: [RequiredRule(), EmailRule()])
+        validator.registerField(passwordText, errorLabel: passwordError, rules: [RequiredRule()])
+        validator.registerField(ชื่อText, errorLabel: firstnameError, rules: [RequiredRule()])
+        validator.registerField(นามสกุลText, errorLabel: lastnameError, rules: [RequiredRule()])
+        validator.registerField(เบอร์โทรText, errorLabel: telError, rules: [RequiredRule(), PhoneNumberRule()])
         
         emailText.setBottomBorder(borderColor: .lightGray)
         passwordText.setBottomBorder(borderColor: .lightGray)
@@ -79,6 +112,55 @@ class registerController: UIViewController, UITextFieldDelegate, UINavigationCon
         
         // Do any additional setup after loading the view, typically from a nib.
     }
+    
+    
+    @IBAction func donePressed(_ sender: AnyObject) {
+        print("Validating...")
+        validator.validate(self)
+    }
+    
+    func validationSuccessful() {
+        print("Validation Success!")
+//        let alert = UIAlertController(title: "Success", message: "สมัครเรียบร้อยแล้ว", preferredStyle: UIAlertControllerStyle.alert)
+//        //let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//        let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//        alert.addAction(defaultAction)
+//        self.present(alert, animated: false, completion: nil)
+        let parameters: Parameters = ["user": "\(emailText.text!)", "pass": "\(passwordText.text!)", "firstname": "\(ชื่อText.text!)", "lastname": "\(นามสกุลText.text!)", "user_role": "\(ตำแหน่งText.text!)", "tel": "\(เบอร์โทรText.text!)"]
+        let baseURL = "http://january.banana.co.th/api/auth/regis"
+        //let header = ["Apikey": "banana_app_iot", "Content-Type": "application/x-www-form-urlencoded"]
+        let header = ["Content-Type": "application/x-www-form-urlencoded"]
+        print(parameters)
+        Alamofire.request(baseURL, method: .post, parameters: parameters, encoding: URLEncoding.default, headers: header)
+            .downloadProgress(queue: DispatchQueue.global(qos: .utility)) { progress in
+                print("Progress: \(progress.fractionCompleted)")
+            }
+            .validate { request, response, data in
+                // Custom evaluation closure now includes data (allows you to parse data to dig out error messages if necessary)
+                return .success
+            }
+            .responseJSON { response in
+                debugPrint(response)
+                //print(response.description)
+//                if let result = response.result.value {
+//                    let JSON = result as! NSDictionary
+//                    let message = JSON["message"] as! Dictionary<String,String>
+//                    let token = message["token"]
+//                    let firstName = message["firstname"]
+//                    let lastName = message["lastname"]
+//                    let user_id = message["user_id"]
+//                    let userRole = message["user_role"]
+//                    let userData = userDoor(_token: token!, _firstName: firstName!, _lastName: lastName!, _userId: user_id!, _userRole: userRole!)
+//                    print(userData)
+//                    RealmService.share.create(userData)
+//                }
+        }
+        //dismiss(animated: true, completion: nil)
+    }
+    func validationFailed(_ errors:[(Validatable, ValidationError)]) {
+        print("Validation FAILED!")
+    }
+    
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any])
     {
@@ -133,7 +215,7 @@ class registerController: UIViewController, UITextFieldDelegate, UINavigationCon
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        
+
         return true
     }
     
@@ -193,7 +275,6 @@ extension registerController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
 }
-
 
 
 

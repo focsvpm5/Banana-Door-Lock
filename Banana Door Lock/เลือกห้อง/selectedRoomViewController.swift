@@ -45,6 +45,10 @@ class selectedRoomViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle{
+        return .lightContent
+    }
+    
     
     
 
@@ -88,6 +92,8 @@ extension selectedRoomViewController: UITableViewDelegate {
 //        updateView.pickup = pickUp
         //present(updateView, animated: true, completion: nil)
         tableViewRoom.reloadData()
+        let userView = storyboard?.instantiateViewController(withIdentifier: "userPressed")as! UINavigationController
+        present(userView, animated: true, completion: nil)
     }
     
 }

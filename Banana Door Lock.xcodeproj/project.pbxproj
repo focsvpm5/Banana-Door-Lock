@@ -18,12 +18,12 @@
 		8425C26920EF618F00303F31 /* RealmService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C26820EF618F00303F31 /* RealmService.swift */; };
 		8425C26B20EF623500303F31 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C26A20EF623500303F31 /* Account.swift */; };
 		842B5E3A20F0977000167AE4 /* userController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842B5E3920F0977000167AE4 /* userController.swift */; };
-		845E067120F0CCC000F4AD67 /* informPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845E067020F0CCC000F4AD67 /* informPage.swift */; };
 		845E067920F63EBA00F4AD67 /* roomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845E067720F63EBA00F4AD67 /* roomTableViewCell.swift */; };
 		845E067A20F63EBA00F4AD67 /* roomTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 845E067820F63EBA00F4AD67 /* roomTableViewCell.xib */; };
 		845E067C20F6426900F4AD67 /* selectedRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845E067B20F6426900F4AD67 /* selectedRoomViewController.swift */; };
 		845E067E20F7142E00F4AD67 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845E067D20F7142E00F4AD67 /* CalendarViewController.swift */; };
 		845E068020F71E4500F4AD67 /* FSCalendarScopeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845E067F20F71E4500F4AD67 /* FSCalendarScopeViewController.swift */; };
+		84AA2DA920FF366E0018B29B /* userDoor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AA2DA820FF366E0018B29B /* userDoor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,12 +41,12 @@
 		8425C26820EF618F00303F31 /* RealmService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
 		8425C26A20EF623500303F31 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		842B5E3920F0977000167AE4 /* userController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = userController.swift; sourceTree = "<group>"; };
-		845E067020F0CCC000F4AD67 /* informPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = informPage.swift; sourceTree = "<group>"; };
 		845E067720F63EBA00F4AD67 /* roomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = roomTableViewCell.swift; sourceTree = "<group>"; };
 		845E067820F63EBA00F4AD67 /* roomTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = roomTableViewCell.xib; sourceTree = "<group>"; };
 		845E067B20F6426900F4AD67 /* selectedRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = selectedRoomViewController.swift; sourceTree = "<group>"; };
 		845E067D20F7142E00F4AD67 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		845E067F20F71E4500F4AD67 /* FSCalendarScopeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FSCalendarScopeViewController.swift; sourceTree = "<group>"; };
+		84AA2DA820FF366E0018B29B /* userDoor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = userDoor.swift; sourceTree = "<group>"; };
 		99C86B3D6BD470ABAEA2FD1A /* Pods_Banana_Door_Lock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Banana_Door_Lock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -111,7 +111,6 @@
 			isa = PBXGroup;
 			children = (
 				8425C25920EE7CE800303F31 /* registerController.swift */,
-				845E067020F0CCC000F4AD67 /* informPage.swift */,
 			);
 			path = register;
 			sourceTree = "<group>";
@@ -129,6 +128,7 @@
 			children = (
 				8425C26820EF618F00303F31 /* RealmService.swift */,
 				8425C26A20EF623500303F31 /* Account.swift */,
+				84AA2DA820FF366E0018B29B /* userDoor.swift */,
 			);
 			path = Realm;
 			sourceTree = "<group>";
@@ -262,6 +262,7 @@
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftMQTT/SwiftMQTT.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftValidator/SwiftValidator.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -273,6 +274,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftMQTT.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftValidator.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -311,10 +313,10 @@
 				845E067920F63EBA00F4AD67 /* roomTableViewCell.swift in Sources */,
 				845E067C20F6426900F4AD67 /* selectedRoomViewController.swift in Sources */,
 				8425C24820EE71BE00303F31 /* AppDelegate.swift in Sources */,
-				845E067120F0CCC000F4AD67 /* informPage.swift in Sources */,
 				8425C26220EE87D900303F31 /* Extensions.swift in Sources */,
 				8425C26920EF618F00303F31 /* RealmService.swift in Sources */,
 				845E068020F71E4500F4AD67 /* FSCalendarScopeViewController.swift in Sources */,
+				84AA2DA920FF366E0018B29B /* userDoor.swift in Sources */,
 				8425C26B20EF623500303F31 /* Account.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
