@@ -28,9 +28,9 @@ class roomTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(withViewModel viewModel: Account) -> (Void) {
+    func configure(withViewModel viewModel: selectedRoom) -> (Void) {
         
-        numberRoom.text = viewModel.userId
+        numberRoom.text = viewModel.room_id
         
     }
 

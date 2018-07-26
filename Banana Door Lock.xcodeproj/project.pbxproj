@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5CBAF7BE92EA686A2AF4A340 /* Pods_Banana_Door_Lock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99C86B3D6BD470ABAEA2FD1A /* Pods_Banana_Door_Lock.framework */; };
+		84208B542100A0850034D846 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84208B532100A0850034D846 /* GoogleService-Info.plist */; };
+		84208B76210598D70034D846 /* historyDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84208B75210598D70034D846 /* historyDate.swift */; };
 		8425C24820EE71BE00303F31 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C24720EE71BE00303F31 /* AppDelegate.swift */; };
 		8425C24A20EE71BE00303F31 /* loginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C24920EE71BE00303F31 /* loginController.swift */; };
 		8425C24D20EE71BE00303F31 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8425C24B20EE71BE00303F31 /* Main.storyboard */; };
@@ -16,19 +18,22 @@
 		8425C25A20EE7CE800303F31 /* registerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C25920EE7CE800303F31 /* registerController.swift */; };
 		8425C26220EE87D900303F31 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C26120EE87D900303F31 /* Extensions.swift */; };
 		8425C26920EF618F00303F31 /* RealmService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C26820EF618F00303F31 /* RealmService.swift */; };
-		8425C26B20EF623500303F31 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425C26A20EF623500303F31 /* Account.swift */; };
 		842B5E3A20F0977000167AE4 /* userController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842B5E3920F0977000167AE4 /* userController.swift */; };
 		845E067920F63EBA00F4AD67 /* roomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845E067720F63EBA00F4AD67 /* roomTableViewCell.swift */; };
 		845E067A20F63EBA00F4AD67 /* roomTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 845E067820F63EBA00F4AD67 /* roomTableViewCell.xib */; };
 		845E067C20F6426900F4AD67 /* selectedRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845E067B20F6426900F4AD67 /* selectedRoomViewController.swift */; };
-		845E067E20F7142E00F4AD67 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845E067D20F7142E00F4AD67 /* CalendarViewController.swift */; };
 		845E068020F71E4500F4AD67 /* FSCalendarScopeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845E067F20F71E4500F4AD67 /* FSCalendarScopeViewController.swift */; };
+		848A52FF2105DF070058CDFC /* selectedRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848A52FE2105DF070058CDFC /* selectedRoom.swift */; };
+		848FAAB22105B2F300513C25 /* historyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848FAAB02105B2F300513C25 /* historyTableViewCell.swift */; };
+		848FAAB32105B2F300513C25 /* historyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 848FAAB12105B2F300513C25 /* historyTableViewCell.xib */; };
 		84AA2DA920FF366E0018B29B /* userDoor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AA2DA820FF366E0018B29B /* userDoor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		177D2130396C3D655C1C4867 /* Pods-Banana Door Lock.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Banana Door Lock.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Banana Door Lock/Pods-Banana Door Lock.debug.xcconfig"; sourceTree = "<group>"; };
 		77E34475C8BD4132FAE818D7 /* Pods-Banana Door Lock.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Banana Door Lock.release.xcconfig"; path = "Pods/Target Support Files/Pods-Banana Door Lock/Pods-Banana Door Lock.release.xcconfig"; sourceTree = "<group>"; };
+		84208B532100A0850034D846 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		84208B75210598D70034D846 /* historyDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = historyDate.swift; sourceTree = "<group>"; };
 		8425C24420EE71BE00303F31 /* Banana Door Lock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Banana Door Lock.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8425C24720EE71BE00303F31 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8425C24920EE71BE00303F31 /* loginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = loginController.swift; sourceTree = "<group>"; };
@@ -39,13 +44,14 @@
 		8425C25920EE7CE800303F31 /* registerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = registerController.swift; sourceTree = "<group>"; };
 		8425C26120EE87D900303F31 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8425C26820EF618F00303F31 /* RealmService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
-		8425C26A20EF623500303F31 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		842B5E3920F0977000167AE4 /* userController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = userController.swift; sourceTree = "<group>"; };
 		845E067720F63EBA00F4AD67 /* roomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = roomTableViewCell.swift; sourceTree = "<group>"; };
 		845E067820F63EBA00F4AD67 /* roomTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = roomTableViewCell.xib; sourceTree = "<group>"; };
 		845E067B20F6426900F4AD67 /* selectedRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = selectedRoomViewController.swift; sourceTree = "<group>"; };
-		845E067D20F7142E00F4AD67 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		845E067F20F71E4500F4AD67 /* FSCalendarScopeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FSCalendarScopeViewController.swift; sourceTree = "<group>"; };
+		848A52FE2105DF070058CDFC /* selectedRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = selectedRoom.swift; sourceTree = "<group>"; };
+		848FAAB02105B2F300513C25 /* historyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = historyTableViewCell.swift; sourceTree = "<group>"; };
+		848FAAB12105B2F300513C25 /* historyTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = historyTableViewCell.xib; sourceTree = "<group>"; };
 		84AA2DA820FF366E0018B29B /* userDoor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = userDoor.swift; sourceTree = "<group>"; };
 		99C86B3D6BD470ABAEA2FD1A /* Pods_Banana_Door_Lock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Banana_Door_Lock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -94,6 +100,7 @@
 				8425C24B20EE71BE00303F31 /* Main.storyboard */,
 				8425C24E20EE71C100303F31 /* Assets.xcassets */,
 				8425C25020EE71C100303F31 /* LaunchScreen.storyboard */,
+				84208B532100A0850034D846 /* GoogleService-Info.plist */,
 				8425C25320EE71C100303F31 /* Info.plist */,
 			);
 			path = "Banana Door Lock";
@@ -127,8 +134,9 @@
 			isa = PBXGroup;
 			children = (
 				8425C26820EF618F00303F31 /* RealmService.swift */,
-				8425C26A20EF623500303F31 /* Account.swift */,
 				84AA2DA820FF366E0018B29B /* userDoor.swift */,
+				84208B75210598D70034D846 /* historyDate.swift */,
+				848A52FE2105DF070058CDFC /* selectedRoom.swift */,
 			);
 			path = Realm;
 			sourceTree = "<group>";
@@ -144,8 +152,9 @@
 		845E066820F0AC6B00F4AD67 /* Calendar */ = {
 			isa = PBXGroup;
 			children = (
-				845E067D20F7142E00F4AD67 /* CalendarViewController.swift */,
 				845E067F20F71E4500F4AD67 /* FSCalendarScopeViewController.swift */,
+				848FAAB02105B2F300513C25 /* historyTableViewCell.swift */,
+				848FAAB12105B2F300513C25 /* historyTableViewCell.xib */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -239,6 +248,8 @@
 			files = (
 				8425C25220EE71C100303F31 /* LaunchScreen.storyboard in Resources */,
 				8425C24F20EE71C100303F31 /* Assets.xcassets in Resources */,
+				848FAAB32105B2F300513C25 /* historyTableViewCell.xib in Resources */,
+				84208B542100A0850034D846 /* GoogleService-Info.plist in Resources */,
 				845E067A20F63EBA00F4AD67 /* roomTableViewCell.xib in Resources */,
 				8425C24D20EE71BE00303F31 /* Main.storyboard in Resources */,
 			);
@@ -257,24 +268,32 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/FSCalendar/FSCalendar.framework",
 				"${BUILT_PRODUCTS_DIR}/GCCalendar/GCCalendar.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftMQTT/SwiftMQTT.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftValidator/SwiftValidator.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FSCalendar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GCCalendar.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManagerSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftMQTT.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftValidator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -306,18 +325,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				845E067E20F7142E00F4AD67 /* CalendarViewController.swift in Sources */,
 				842B5E3A20F0977000167AE4 /* userController.swift in Sources */,
 				8425C24A20EE71BE00303F31 /* loginController.swift in Sources */,
 				8425C25A20EE7CE800303F31 /* registerController.swift in Sources */,
 				845E067920F63EBA00F4AD67 /* roomTableViewCell.swift in Sources */,
+				848A52FF2105DF070058CDFC /* selectedRoom.swift in Sources */,
 				845E067C20F6426900F4AD67 /* selectedRoomViewController.swift in Sources */,
+				848FAAB22105B2F300513C25 /* historyTableViewCell.swift in Sources */,
 				8425C24820EE71BE00303F31 /* AppDelegate.swift in Sources */,
 				8425C26220EE87D900303F31 /* Extensions.swift in Sources */,
+				84208B76210598D70034D846 /* historyDate.swift in Sources */,
 				8425C26920EF618F00303F31 /* RealmService.swift in Sources */,
 				845E068020F71E4500F4AD67 /* FSCalendarScopeViewController.swift in Sources */,
 				84AA2DA920FF366E0018B29B /* userDoor.swift in Sources */,
-				8425C26B20EF623500303F31 /* Account.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -17,8 +17,18 @@
 import UIKit
 import SwiftValidator
 import Alamofire
+import FirebaseStorage
 
 class registerController: UIViewController, UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, ValidationDelegate {
+    
+    // Api register
+    var registersuccess = "success"
+    
+    // Firebase storage
+    var imageReference: StorageReference {
+        return Storage.storage().reference().child("images")
+    }
+    var imageURL: String = ""
     
     // UI ImageView
     @IBOutlet weak var myImageView: UIImageView!
@@ -81,8 +91,8 @@ class registerController: UIViewController, UITextFieldDelegate, UINavigationCon
         
         validator.registerField(emailText, errorLabel: emailError, rules: [RequiredRule(), EmailRule()])
         validator.registerField(passwordText, errorLabel: passwordError, rules: [RequiredRule()])
-        validator.registerField(ชื่อText, errorLabel: firstnameError, rules: [RequiredRule()])
-        validator.registerField(นามสกุลText, errorLabel: lastnameError, rules: [RequiredRule()])
+        validator.registerField(ชื่อText, errorLabel: firstnameError, rules: [RequiredRule(),firstLastNameRule()])
+        validator.registerField(นามสกุลText, errorLabel: lastnameError, rules: [RequiredRule(),firstLastNameRule()])
         validator.registerField(เบอร์โทรText, errorLabel: telError, rules: [RequiredRule(), PhoneNumberRule()])
         
         emailText.setBottomBorder(borderColor: .lightGray)
@@ -113,6 +123,14 @@ class registerController: UIViewController, UITextFieldDelegate, UINavigationCon
         // Do any additional setup after loading the view, typically from a nib.
     }
     
+    class firstLastNameRule: RegexRule {
+        
+        static let regex = "[A-Za-z]{1,}"
+        
+        convenience init(message : String = "Not a english"){
+            self.init(regex: firstLastNameRule.regex, message : message)
+        }
+    }
     
     @IBAction func donePressed(_ sender: AnyObject) {
         print("Validating...")
@@ -121,12 +139,56 @@ class registerController: UIViewController, UITextFieldDelegate, UINavigationCon
     
     func validationSuccessful() {
         print("Validation Success!")
+        
+        upImageFirebase {
+            self.registerAPI {
+                let loginView = self.storyboard?.instantiateViewController(withIdentifier: "loginController")as! loginController
+                self.present(loginView, animated: true, completion: nil)
+            }
+        }
+        
+        
 //        let alert = UIAlertController(title: "Success", message: "สมัครเรียบร้อยแล้ว", preferredStyle: UIAlertControllerStyle.alert)
 //        //let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
 //        let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
 //        alert.addAction(defaultAction)
 //        self.present(alert, animated: false, completion: nil)
-        let parameters: Parameters = ["user": "\(emailText.text!)", "pass": "\(passwordText.text!)", "firstname": "\(ชื่อText.text!)", "lastname": "\(นามสกุลText.text!)", "user_role": "\(ตำแหน่งText.text!)", "tel": "\(เบอร์โทรText.text!)"]
+        
+        //dismiss(animated: true, completion: nil)
+    }
+    func validationFailed(_ errors:[(Validatable, ValidationError)]) {
+        print("Validation FAILED!")
+    }
+    
+    // Upload image to Firebase
+    func upImageFirebase (completetion : @escaping () -> ()) {
+        // Firebase
+        guard let image = myImageView.image else { return }
+        guard let imageData = UIImageJPEGRepresentation(image, 1) else { return }
+        let uploadImageRef = imageReference.child("\(ชื่อText.text!) \(นามสกุลText.text!).jpg")
+        let uploadTask = uploadImageRef.putData(imageData, metadata: nil) { (metadata, error) in
+            print("UPLOAD TASK FINISHED")
+            print(metadata ?? "NO METADATA")
+            print(error ?? "NO ERROR")
+            uploadImageRef.downloadURL { (url, error) in
+                let urlText = url?.absoluteString
+                //print(urlText)
+                print(url ?? "NO URL")
+                print(error ?? "NO ERROR")
+                self.imageURL = urlText!
+            }
+        }
+        uploadTask.observe(.progress) { (snapshot) in
+            print(snapshot.progress ?? "NO MORE PROGRESS")
+        }
+        uploadTask.resume()
+        completetion()
+    }
+    
+    // Register API
+    func registerAPI (completetion : @escaping () -> ()) {
+        
+        let parameters: Parameters = ["user": "\(emailText.text!)", "pass": "\(passwordText.text!)", "firstname": "\(ชื่อText.text!)", "lastname": "\(นามสกุลText.text!)", "user_role": "\(ตำแหน่งText.text!)", "tel": "\(เบอร์โทรText.text!)", "picture": "\(imageURL)"]
         let baseURL = "http://january.banana.co.th/api/auth/regis"
         //let header = ["Apikey": "banana_app_iot", "Content-Type": "application/x-www-form-urlencoded"]
         let header = ["Content-Type": "application/x-www-form-urlencoded"]
@@ -142,31 +204,46 @@ class registerController: UIViewController, UITextFieldDelegate, UINavigationCon
             .responseJSON { response in
                 debugPrint(response)
                 //print(response.description)
-//                if let result = response.result.value {
-//                    let JSON = result as! NSDictionary
-//                    let message = JSON["message"] as! Dictionary<String,String>
-//                    let token = message["token"]
-//                    let firstName = message["firstname"]
-//                    let lastName = message["lastname"]
-//                    let user_id = message["user_id"]
-//                    let userRole = message["user_role"]
-//                    let userData = userDoor(_token: token!, _firstName: firstName!, _lastName: lastName!, _userId: user_id!, _userRole: userRole!)
-//                    print(userData)
-//                    RealmService.share.create(userData)
-//                }
+                if let result = response.result.value {
+                    
+                    let JSON = result as! NSDictionary
+                    let status = JSON["status"] as! String
+                    if status == self.registersuccess {
+                        print(self.registersuccess)
+                        completetion()
+                    } else {
+                        print(status)
+                        self.displayAlertDialog(with: "Register Failed", and: "already user", dismiss: false)
+                    }
+                }
         }
-        //dismiss(animated: true, completion: nil)
-    }
-    func validationFailed(_ errors:[(Validatable, ValidationError)]) {
-        print("Validation FAILED!")
     }
     
+    // Alert
+    func displayAlertDialog(with title: String, and message: String, dismiss: Bool){
+        
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        var okHandler = { (action: UIAlertAction) -> Void in}
+        
+        if dismiss {
+            okHandler = { (action: UIAlertAction) -> Void in
+                self.presentingViewController?.dismiss(animated: true, completion: nil)
+            }
+        }
+        
+        let ok = UIAlertAction(title: "OK", style: .default, handler: okHandler)
+        alertController.addAction(ok)
+        self.present(alertController, animated: true, completion: nil)
+    }
     
+    // ดึงรูป
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any])
     {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage
         {
+            
             myImageView.image = image
+            
         }
         else
         {
@@ -204,18 +281,15 @@ class registerController: UIViewController, UITextFieldDelegate, UINavigationCon
         ตำแหน่งText.inputAccessoryView = toolBar
     }
     
-    
+    // keyboard
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-
         return true
     }
     

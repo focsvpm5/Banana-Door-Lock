@@ -12,6 +12,9 @@ import RealmSwift
 import SwiftValidator
 
 class loginController: UIViewController, UITextFieldDelegate, ValidationDelegate {
+    
+    // Api Login
+    var loginsuccess = "Login Success"
 
     // Realm
     let realm = try! Realm()
@@ -121,13 +124,35 @@ class loginController: UIViewController, UITextFieldDelegate, ValidationDelegate
         
     }
     
+    // Validate
     func validationSuccessful() {
         print("Validation Success!")
+        
+        // Realm
+        self.users = realm.objects(userDoor.self)
+        try! realm.write {
+            realm.delete(users!)
+        }
+        
+        loginAPI {
+            let selectRoomView = self.storyboard?.instantiateViewController(withIdentifier: "selectedRoomViewController")as! UINavigationController
+            self.present(selectRoomView, animated: true, completion: nil)
+        }
 //        let alert = UIAlertController(title: "Success", message: "สมัครเรียบร้อยแล้ว", preferredStyle: UIAlertControllerStyle.alert)
 //        let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
 //        alert.addAction(defaultAction)
 //        self.present(alert, animated: true, completion: nil)
         
+        
+        
+        
+    }
+    func validationFailed(_ errors:[(Validatable, ValidationError)]) {
+        print("Validation FAILED!")
+    }
+    
+    // Login API
+    func loginAPI (completetion : @escaping () -> ()) {
         let parameters: Parameters = ["user": "\(userName.text!)", "pass": "\(passWord.text!)"]
         let baseURL = "http://january.banana.co.th/api/auth/login"
         //let header = ["Apikey": "banana_app_iot", "Content-Type": "application/x-www-form-urlencoded"]
@@ -142,45 +167,65 @@ class loginController: UIViewController, UITextFieldDelegate, ValidationDelegate
                 return .success
             }
             .responseJSON { response in
-//                guard let newsResponse = response.result.value as? [[String:String]] else{
-//                    print("Error: \(String(describing: response.result.error))")
-//                    return
-//                }
-//                print("JSON: \(newsResponse)")
-//                let localArray = newsResponse
-//                //Access the localArray
-//                //print("Local Array:", localArray)
-//                //Now to get the desired value from dictionary try like this way.
-//                let dic = localArray[0]
-//                let token = dic["token"]
-//                let firstname = dic["firstname"]
-//                let lastname = dic["lastname"]
-//                let user_id = dic["user_id"]
-//                let userData = userRealm(_token: token!, _firstName: firstname!, _lastName: lastname!, _userId: user_id!)
-//                print(userData)
-//                RealmService.share.create(userData)
+                //                guard let newsResponse = response.result.value as? [[String:String]] else{
+                //                    print("Error: \(String(describing: response.result.error))")
+                //                    return
+                //                }
+                //                print("JSON: \(newsResponse)")
+                //                let localArray = newsResponse
+                //                //Access the localArray
+                //                //print("Local Array:", localArray)
+                //                //Now to get the desired value from dictionary try like this way.
+                //                let dic = localArray[0]
+                //                let token = dic["token"]
+                //                let firstname = dic["firstname"]
+                //                let lastname = dic["lastname"]
+                //                let user_id = dic["user_id"]
+                //                let userData = userRealm(_token: token!, _firstName: firstname!, _lastName: lastname!, _userId: user_id!)
+                //                print(userData)
+                //                RealmService.share.create(userData)
                 //... get other value same way.
-                //debugPrint(response)
-                print(response.description)
+                debugPrint(response)
+                //print(response.description)
                 if let result = response.result.value {
+                    
                     let JSON = result as! NSDictionary
-                    let message = JSON["message"] as! Dictionary<String,String>
-                    let token = message["token"]
-                    let firstName = message["firstname"]
-                    let lastName = message["lastname"]
-                    let user_id = message["user_id"]
-                    let userRole = message["user_role"]
-                    let userData = userDoor(_token: token!, _firstName: firstName!, _lastName: lastName!, _userId: user_id!, _userRole: userRole!)
-                    print(userData)
-                    RealmService.share.create(userData)
+                    let status = JSON["status"] as! String
+                    if status == self.loginsuccess {
+                        let message = JSON["message"] as! Dictionary<String,String>
+                        let token = message["token"]
+                        let firstName = message["firstname"]
+                        let lastName = message["lastname"]
+                        let user_id = message["user_id"]
+                        let userRole = message["user_role"]
+                        let picture = message["picture"]
+                        let userData = userDoor(_token: token!, _firstName: firstName!, _lastName: lastName!, _userId: user_id!, _userRole: userRole!, _picture: picture!)
+                        print(userData)
+                        RealmService.share.create(userData)
+                        completetion()
+                    } else {
+                        print(status)
+                        self.displayAlertDialog(with: "Login Failed", and: "Wrong Username or Password", dismiss: false)
+                    }
+                    
                 }
         }
-        let selectRoomView = storyboard?.instantiateViewController(withIdentifier: "selectedRoomViewController")as! UINavigationController
-        present(selectRoomView, animated: true, completion: nil)
-        
     }
-    func validationFailed(_ errors:[(Validatable, ValidationError)]) {
-        print("Validation FAILED!")
+    
+    func displayAlertDialog(with title: String, and message: String, dismiss: Bool){
+        
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        var okHandler = { (action: UIAlertAction) -> Void in}
+        
+        if dismiss {
+            okHandler = { (action: UIAlertAction) -> Void in
+                self.presentingViewController?.dismiss(animated: true, completion: nil)
+            }
+        }
+        
+        let ok = UIAlertAction(title: "OK", style: .default, handler: okHandler)
+        alertController.addAction(ok)
+        self.present(alertController, animated: true, completion: nil)
     }
     
 }

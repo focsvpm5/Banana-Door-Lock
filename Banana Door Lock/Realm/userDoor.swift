@@ -15,9 +15,10 @@ class userDoor: Object {
     @objc dynamic var lastName: String = ""
     @objc dynamic var userId: String = ""
     @objc dynamic var userRole: String = ""
+    @objc dynamic var picture: String = ""
     
     
-    convenience init(_token : String, _firstName : String, _lastName : String, _userId : String, _userRole : String) {
+    convenience init(_token : String, _firstName : String, _lastName : String, _userId : String, _userRole : String, _picture : String) {
         self.init()
         self.token = _token
         self.firstName = _firstName
@@ -25,6 +26,7 @@ class userDoor: Object {
         self.token = _token
         self.userId = _userId
         self.userRole = _userRole
+        self.picture = _picture
     }
     
     override class func primaryKey() -> String {

@@ -8,8 +8,26 @@
 
 import UIKit
 import FSCalendar
+import Alamofire
+import RealmSwift
 
 class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FSCalendarDataSource, FSCalendarDelegate, UIGestureRecognizerDelegate {
+    
+    @IBOutlet weak var noDataLabel: UILabel!
+    
+    // history API
+    var ok = "ok"
+    
+    // Realm
+    let realm = try! Realm()
+    var items : Results<historyDate>?
+    var item:historyDate!
+    
+    var historyToRoom : selectedRoom!
+    
+    var tokenWithUserDoor : String = ""
+    
+    let identifier = "historyCellIdentifier"
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var calendar: FSCalendar!
@@ -21,7 +39,7 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
     
     fileprivate lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yyyy" //"yyyy/MM/dd"
+        formatter.dateFormat = "yyyy-MM-dd" //"yyyy/MM/dd"
         return formatter
     }()
     fileprivate lazy var scopeGesture: UIPanGestureRecognizer = {
@@ -36,7 +54,35 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Image needs to be added to project.
+        let buttonIcon = UIImage(named: "back")
+        
+        let leftBarButton = UIBarButtonItem(title: "Edit", style: UIBarButtonItemStyle.done, target: self, action: #selector(FSCalendarScopeExampleViewController.myLeftSideBarButtonItemTapped))
+        leftBarButton.image = buttonIcon
+        leftBarButton.tintColor = .white
+        
+        self.navigationItem.leftBarButtonItem = leftBarButton
+        
+        if let userDoorlock = realm.objects(userDoor.self).last {
+            self.tokenWithUserDoor = userDoorlock.token
+            print("Token is : \(tokenWithUserDoor)")
+        }
+        
+        let nib = UINib(nibName: "historyTableViewCell", bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: identifier)
+        
+        // set date for label
         datePicked.text = self.dateFormatter.string(from: Date())
+        
+        historyAPI {
+            self.tableView.reloadData()
+        }
+        
+        // Realm
+        self.items = realm.objects(historyDate.self)
+        try! realm.write {
+            realm.delete(items!)
+        }
         
         setStatusBarBackgroundColor(color: .init(red: 65/255.0, green: 195/255.0, blue: 0, alpha: 1))
         
@@ -58,6 +104,17 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
     
     deinit {
         print("\(#function)")
+    }
+    
+    @objc func myLeftSideBarButtonItemTapped(_ sender:UIBarButtonItem!)
+    {
+        print("myLeftSideBarButtonItemTapped")
+        let userRoomView = storyboard?.instantiateViewController(withIdentifier: "userController")as! userController
+        let userSelect = self.historyToRoom
+        userRoomView.selectToRoom = userSelect
+        print("AAAAAAAAAAAAAAAAAAAAA: \(userSelect!)")
+        //present(userView, animated: true, completion: nil)
+        self.navigationController?.pushViewController(userRoomView, animated: true)
     }
     
     // MARK:- UIGestureRecognizerDelegate
@@ -89,6 +146,13 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
         if monthPosition == .next || monthPosition == .previous {
             calendar.setCurrentPage(date, animated: true)
         }
+        historyAPI {
+            self.tableView.reloadData()
+        }
+        self.items = self.realm.objects(historyDate.self)
+        try! self.realm.write {
+            self.realm.delete(self.items!)
+        }
     }
     
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
@@ -102,12 +166,14 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
 //    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+            return self.items!.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell")!
-            return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? historyTableViewCell
+        let data = self.items![indexPath.row]
+        cell?.configure(withRealm: data)
+        return cell!
     }
     
     
@@ -122,6 +188,55 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
 //        return 0.5
 //    }
     
+    // API history day
+    func historyAPI (completetion : @escaping () -> ()) {
+        
+        let parameters: Parameters = ["room_id": "\(historyToRoom.room_id)", "day": "\(datePicked.text!)"]
+        let baseURL = "http://january.banana.co.th/api/admin/room-history-day"
+        //let header = ["Apikey": "banana_app_iot", "Content-Type": "application/x-www-form-urlencoded"]
+        let header = ["token": "\(tokenWithUserDoor)"]
+        print(parameters)
+        Alamofire.request(baseURL, method: .post, parameters: parameters, encoding: URLEncoding.default, headers: header)
+            .downloadProgress(queue: DispatchQueue.global(qos: .utility)) { progress in
+                print("Progress: \(progress.fractionCompleted)")
+            }
+            .validate { request, response, data in
+                // Custom evaluation closure now includes data (allows you to parse data to dig out error messages if necessary)
+                return .success
+            }
+            .responseJSON { response in
+                debugPrint(response)
+                //print(response.description)
+                if let result = response.result.value {
+
+                    let JSON = result as! NSDictionary
+                    let status = JSON["status"] as! String
+                    if status == self.ok {
+                        self.noDataLabel.isHidden = true
+                        let messageData = JSON["message"] as? [[String:String]]
+                        let localArray = messageData
+                        print("Local Array:", localArray!)
+                        for i in 0..<localArray!.count {
+                            let dic = localArray![i]
+                            let firstname = dic["firstname"]
+                            let lastname = dic["lastname"]
+                            let date = dic["date"]
+                            let indexStartOfText = date!.index((date?.startIndex)!, offsetBy: 11)
+                            let substringDay = date![indexStartOfText...]
+                            print(substringDay)
+                            let history = historyDate(_firstName: firstname!, _lastName: lastname!, _date: String(substringDay))
+                            print(history)
+                            RealmService.share.create(history)
+                        }
+                    } else {
+                        print(status)
+                        self.noDataLabel.isHidden = false
+                    }
+                }
+                completetion()
+            }
+    }
+    
     // MARK:- Target actions
     
     func setStatusBarBackgroundColor(color: UIColor) {
@@ -133,11 +248,6 @@ class FSCalendarScopeExampleViewController: UIViewController, UITableViewDataSou
     
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .lightContent
-    }
-    
-    
-    @IBAction func backPressed(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil)
     }
     
 }
